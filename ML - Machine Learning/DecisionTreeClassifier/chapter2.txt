@@ -1,0 +1,206 @@
+<Generalization Error - Video>
+
+We'll understand whats is the generalization error of a supervised machine learning model. In supervised learning, you make the assumption that there's a mapping f betwwen features and labels. You can expressa this as y = f(x).
+
+<img - noise>
+
+F which is shown in red here is an unknown function that you want to determine. In reality, data generation is always accompanied with randomness or noise like the blue pints shown here. 
+
+Your goal is to find a model Fhat best approximates f. When training Fhat, you want to make sure that noise is discarded as much as possible. 
+
+At the end, fhat should achieve a low predictive error on unseen datasets. You may encounter two difficulties when approximating f.
+The first is overfitting, it's when fhat fits the noise in training set. The second is underfitting, it's when fhat is not flexible enough to approximate f.
+
+When a model overfits the training set, its predictive power on unseen datasets is pretty low.
+
+<img>
+
+This illustrated by the predictions of the decision tree regressor shown here in red. The model clearly memorized the noise present in the training set.
+
+Such model achieves a low training set error and a high test set error. When a model undersits the data, like the regression tree whose predictions are shown here in red, the training set error is roughly equal to test set error.
+
+however, both erros are relatively high. Now the trained model isn't flexible enough to capture the comples dependency between features and labels.
+
+In analogy it's like teaching calculos to a 3 year old. The child does not have the required mental abstraction level that enables him to undestand calculus. The generalization error of a model tells you how much it generalizes on unseen data.
+
+the generalization error of a model tells you how much it generalizes on unseen data. It can be decomposed into 3 terms: bias, variance and irreducible errorwhere the irreducivle error is the error contribution of noise.
+
+f^ = bias² + variance + irreducible error.
+
+the bias term tells you, on average, how much fhat and f are different.
+
+To illustrate this consider the high bias model shown here in black; this model is not flexible enough to approximate the true function f shown in red.
+
+High bias models lead to underfitting. The variance term tells you how much fhat is incosistent over different training sets.
+
+<image - variance>
+
+
+Consider the high variance model shown here in clack; in this case, fhat follows the training data points so closely that it misses the true fucntion f shown in red.
+
+High variance models lead to overfitting. The complexity of a model sets its flexibility to approximate the true function f.
+
+
+For example, increasing the maximum-tree-depth increases the complexity of a decision tree.
+
+The diagram here shows how the best model complexity corresponds to the lowest generalization error.
+
+<image bias variance tradeoff>
+
+
+When the model complexity increases, the varinace increases while the bias decreases. Conversely, when model complexity decreases, variance decreases and bias increases. 
+
+Your goal is to find the model complexity that achieves the lowest generalization error. Since this error is the sum of tree terms with the irreducible error being constant, you need to find a balance between bias and variance because as one increases the other decreases.
+
+This known as the bias-variance trade-off. Visually you can imagine approximating fhat as aiming at the center of a shooting-target where the center is the true function f.
+
+If fhat is low bias and low variance, your shots will be closely clustered around the center. if fhat is high variance and high bias, not only will your shots miss the target but they would also be spread all around the shooting target.
+
+<bias variance trade off: a visual explanation>
+
+
+<Diagnose bias and variance problems- video>
+
+
+
+We''l learn how to diagnose bias and variance problems. Given that we've trained a supervised machine learning model labeld fhat, how do you estimate the fhat's generalization error?
+
+This cannot be done directly beacuse:
+	- f is unknown
+	- usually only have one dataset
+	- you dont have acess to the error term due to noise.
+
+
+A solution to this is to first split the data into a training and test set. The model fhat can then be fit to the training set and its error can be evaluated on the test set.
+
+
+The generalization error of fhat is roughly approximated by fhat's error on the test set.
+
+Usually, the test set should be kept untouched until one is confident about fhat's performance.
+
+It should be only used to evaluate fhat's final performance or error. Now, evaluating fhat's performance on the training set may produce an optimistic estimation of the error becuase fhat was already exposed to the training set when it was fit. 
+
+To Obtain a reliable estimate of fhat's peformance, you shoulf use a techiniqye called cross-validation or CV. It''s can be performed using k-fold-CV or hold-out-CV.
+
+<K fold cv - Diagram img>
+
+The diagram here illustrate this technique for k = 10. First, the training set (T) is split randomly into 10 partitions or fold, the error of fhat is evaluated 10 times on the 10 folds, each time, one fold is picked for evaluation after training fhat on the other 9 folds. At the end, we'll obtain a list of 10 erros.
+
+Finally, as shown in this formula, the CV-error is computed as the mean of the 10 obtained erros
+
+CV error = (E1 + ... + E10) / 10
+
+
+Once you've computed fhat's cross-validation-error, you can check if its greater than fhats's training set error. If its greated, fhat is said to suffer from high variance. Insuch case, fhat has overfit the training set.
+
+To remdy this try decreasing fhat's complexity.For exmaple, in a decision tree you can reduce the maximum-tree-depth or increase the maximum-samples-per-leaf.
+
+In addition, you may also gather more data to train fhat. On the other hand, fhat is said to suffer from high bias if its cross -validation-error is roughly equal to the training error but much greater than the desired error.
+
+
+In such case fhat underdits the training set.
+To remedy this, try increasing the model's complexity or gather more relevant features for the problem.
+
+Let's now see how er can perform K-Fold-cross-validation using scikit-learn on the auto-dataset which is already loaded.In addition to the usual imports, you should also import the fucntion cross_val_score() from sklearn.model.selection.
+
+First, split the dataset into 70% train and 30% test using train_tes_split(). Then, instantiate a DecisionTreeRegressor() dt with the parameters max_depth set to 4 and min_samples_leaf to 0.14. Next, call cross_val_score() by passing dt, X_train, y_train; set the parameters CV to 10 for 10-fold-cross-validation and scorinf to neg_mean_squared_error to compute the negative-mean-squared-erros.
+
+The scoring parameter wat set so beacuse cross_val_Score() does not allow computing the mean-squared-error directly.
+
+Finally, se n_jobs to -1 to exploit all available CPUs in computation.
+
+
+The result is a numpy-array of the 10 negative mean-squared-erros achieved on the 10-folds. You can multiply the result by minus-ne to obtain an array of CV-MSE. After that, fit dt to training set and evaluate the labels of the training and test sets. The CV-mean-squared-error can be determined as the mean of MSE_CV.
+
+Finally, you can use the function MSE to evaluate the train and test set mean-squared-errors. Given that the training set error is smaller than the CV-error, we can deduce that dt overfits the trainign set and that it suffers from high variance.
+
+Noticce how the CV and test set erros are roughly equal.
+
+
+<code>
+
+
+
+< Ensemble Learning - Video >
+
+Advantages of CARTs, lets first recao what we learned from the previous chapter about CARTs. Its presents many advantages, for exmplae, they are easy to understand ans their output is easy to interpret. In addition, CARTs are easy to use and their flexibility gives them an ability to describe nonlinear dependencies between feature and labels.
+
+Moreoverm you dont need a lot of feature preprocessing to train a CART. In contrast to other models, you dont have to standaridize or normalize feature before feeding them to a CART.
+
+CARTs also have limitations.
+
+A classification tree for example, is only able to produce orthogonal decision boundaries. CARTs are also very sensitive to small variations in the training set. Sometimes, when a single point is removed from the training set, a CART1s learned parameters may changed drastically.
+
+CARTs also suffer from  high variance when they are trained without contraints. In such case, they may overfit the training set.
+
+A solution that takes advantage of the flexibility of CARTs while reducing their tendency to memorize noise is ensemble learning.
+
+<Ensemble Learning>
+
+Ensemble learing can be summarized as follow: 
+	- as a first step, different models are trained on the same dataset. 
+	- Each model makes its own predictions. 
+	- A meta model then aggregates the predictions of individual models and outputs a final prediction.
+	- The final predicition is more robust and less prone to erros than each individual model.
+	- The best results are obtained when the models are skillful but in different ways meaning that if some models make prediction that are way off, the other models should compensate these errors.
+
+In such case, the meta-model's predictions are more robust. Let's take a look at the diagram here to visually understand how ensemble learning works for a classification problem.
+
+<IMG - ensemble learning: a visual explanation>
+
+First, the training set is fed to different classifiers. Each clasifier learns its parameters and makes predictions. Then these prediction are fed to a meta model which aggregates them and outputs a final prediction. 
+
+Let's now take a look at an ensemble technique know as the voting classifier. More concretley, we'll consider a bianry classification task. The ensemble here consist of N classifiers making the prediction P0, P1,...,Pn with Pi= 0 or Pi=1.
+
+The meta model outputs the final prediction by hard voting. To understand hard voting, consider a voting classifir that consists of 3 trained classifiers as shown in the diagram here.
+
+<IMG Hard Voting>
+
+While Classifiers 1 and 3 predict the label of 1 for a new dta-point, classifier 2 predict the label 0. In this case, 1 has 2 votes while 0 has 1 vote. As a result, the voting classifier predicts 1.
+
+Now that you know what a voting classifier is, lets train one on the breast cancer dataset using sckit-learn.
+
+You'll do so using all the features in the dataset to predict whether a cell is malignant or not. 
+
+In addtion to usual imports, import LogisticRegression, DecisionTreeClassifier and KNeighbotsClassifier. You also need to import VotingClassifier from sklearn.ensemble. Then, split the data into 70% train and 30% test and instantiate the different models as shown here. After that, define a list named classifiers that constains tuples corresponding the name of the models ans the models themselves.
+
+You can now write a for loop to iterate over the list classifiers, fit each classifier to the training set, evaluate its accuracy on the test set and print the result.
+
+
+The output shows that the best classifer LogisticRegression achieves an accuracy of 94.7 %.
+
+
+Finally, you can instantiate a voting classifier VC by votinh setting the estimators parameter to classifiers.
+
+Fitting VC to the training set yields a test set accuracy of 95.3% This accuracy is higher than that achieved by any of the individual models in the ensemble.
+
+
+<Code ensemble example>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

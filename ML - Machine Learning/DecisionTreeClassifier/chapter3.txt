@@ -1,0 +1,104 @@
+< Bagging - Video >
+
+In Bagging, the ensemble is formed by models that use the same training algorithm. How ever, these models are not trained on the entire training set. Instead, each model is trained on a different subset of the data.
+
+
+In fact, bagging stads for bootstrap agregation. Its naem refers to the fact that it used a technique known as the bootstrap. Overall, bagging has the effect of reducing the variance of individual models in the ensemble.
+
+
+Lets fist try to understand what the bootstrap method is.
+
+
+<Image bootstrap>
+
+
+Consider the case where you have 3 balls labeled A, B and C. A bootstrap sample is a sample drawn from this with replacement. By replacement, we mean that any ball can be drawn many times.
+
+For example, in the first bootstrap sample shown in the diagram here, B was drawn 3 times in a raw. In the second bootstrap sample, A was drawn two times while B was drawn once, and so on.
+
+You may now ask how bootstraping can help us produce an ensemble.
+
+In fact, in the training phase, bagging consist of drawing N different bootstrap samples from the training set.
+
+<Photo bagging training>
+
+
+As shown in the diagram here, each of these bootstrap samples are then used to train N models that use the same algorithm.
+
+<Bagging prediction>
+
+when a new instance is fed to the different models forming the bagging ensemble, each model outputs its prediction. The meta model collects these predictions and outputs a final prediction depending on the nature of the problem.
+
+
+In classification, the final prediction is obtained by majority voting. The corresponding classifier in scikit-learn is BaggingClassifier.
+
+In regression, the final prediction is average of the predictions made by the individual models forming the ensemble. The corresponding regressor in sckit-learn is BaggingRegressor.
+
+Now that you understand how Bagging works, let's train a Bagging Classifier in sckit-learn on the breast cancer dataset.
+
+First import BaggingClassifier, DecisionTreeClassifier, accuracy_score and train_test_split and then split the data into 70%-train and 30%test as show here.
+
+Now, instantiate a classification tree st with the parameters max_depth to 4 and min_samples_leaf set to 0.16. You can then instantiate a BaggingClassifier bc that consists of 300 classification trees dt.
+
+This can be done by setting the parameters base_estimator to dt and n_estimators to 300. In addition, set the parameter n_jobs to -1 so that all CPU cores are used in computation. 
+
+Once you are done, fit bc to the training set, predict the test set labels and finally, evaluate the test set accuracy.
+
+The output shows that a BaggingClassifier achieves a test set accuracy of 93.6%. Training the classification tree dt, which is base estimator here, to the same training set would lead to a test set accuracy of 88.9%.
+
+The result highlights how bagging outperforms the base estimator dt.
+
+<Code>
+
+
+
+
+
+<Out of Bag Evaluation video>
+
+Recall that in bagging, some instances may be sampled several times for one model. On the other hand, other instance may not be samples at all. 
+
+On average, for each model, 63% of the training instances are sampled. The remaining 37% that are not sampled constitute what is know as the Out-of-bag or OOB instances. 
+
+Since OOB instances are not seen by a model during training, these can be used to estimate the performance of the ensemble without the need for cross-validation. 
+
+This technique is known as OOB-evaluation. To understand OOB-evaluation more concretely, take a look at this diagram.
+
+<IMG OBB Evaluation>
+
+Here, for each model, the bootsptrap instances are shown in the vlue while the OOB-instances are shown in red. Each of the N modesl constituting the ensemble is then trained on its corresponding bootstrap samples and evaluated on the OOB instances.
+
+This leads to the obtainment of N OOB scores labeled OOB1 to OOBN.
+The OOB-score of the bagging ensemble is evaluated as the average of these N OOB scores as shown by the formula on top.
+
+Again, we'll be classifying cancerous cells as malignant or benign from the breast cancer dataset.
+
+Afterimporting BaggingClassifier, DecisionTreeClassifier, accuracy_score and train_test_split, split the dataset in a stratified way into 70% train and 30% test by setting the parameter stratify to y. 
+
+Now, first instantiate a classification tree dt with a maximum-depth of 4 and minimum percentage of samples per leaf equal to 16%. Then instantiate a BaggingClassifier called bc that consist of 300 classification trees.
+
+This can be done by setting the parameters n_estimators to 300 and base estimator to dt. Importantly, set the parameter oob_Score to True in order to evaluate the OOB-accuracy of bc after training.
+
+
+Note that in scikit-learn, the OOB-score corresponds to the accuracy for classifiers and the r-squared score regressors. Now fit bc to the training set and predict the test set labels. Assign the test set accuracy to test_accuracy.
+
+Finally, evaluate the OOB-accuracy of bc by extracting the attribute oob_score_ from the trained instance; assing the result to oob_accuracy and print out the results.
+
+
+The rest-set accuracy is about 93.6% and the OOB-accuracy is about 92.5 %. The two obtained accuracies are pretty close though not exactly equal. These results highlight how OOB-evaluation can be an efficient technique to obtain a performance estimate of a bagged-ensemble on unseen data without performing cross-validation.
+
+<code>
+
+<Random Forests (RF) - Video>
+
+We will now learn about the another ensemble learning method know as Random Forests.
+
+Recall that in bagging the base estimator coulb be any model, including a decision tree, logistic regression or even a neural network.
+
+Each estimator is trained on distinct bootstrap smaple drawn fro m the training set using all available features.
+
+
+
+
+
+

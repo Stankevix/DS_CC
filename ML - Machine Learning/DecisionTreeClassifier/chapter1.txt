@@ -1,0 +1,139 @@
+
+
+Machine Learning with Tree Based Models in Python
+
+
+Chapter 1
+
+We're going to learn about the tree-based models for classification and regression. You'll be introduced to a set of supervised learning models known as classification-and-regression-tree or CART.
+
+
+Given a labeled dataset, a classification tree learns a sequence of if-else questions about individual features in order to infer the labels.
+
+In contrast to linear models, trees are able to capture non-linear relationships between features and labels.
+
+In addition, trees don't require the features to be on the same scale through standardization for example, to understand trees more concretely, we'll try to predict whether a tumor is malignant or benign in the Wisconsis Breast Cancer dataset using 2 features.
+
+<figure>
+
+the figure here shows a scatterplot of two cancerous cell features with malignant-tumours in bluw and benign-tumors in red.
+When a classificarion tree is trained on this dataset, the tree learns a sequence of if-else question with each question involving one feature and one split-point.
+
+<Figure>
+
+Take a look at the tree diagram here.
+
+At the top, the tree asks whether the concave-point mean of an instance is if its , the instance traverses the True branch; otherwise, it traverses the False branch. 
+
+Similarly, the instance keeps traversing the internal branches until it reaches an end.
+
+The label of instance is then predicted to be that of the prevailing class at that end. 
+
+The maximum number of branches separating the top from an extreme-end is know as the maximum depth which is equal to 2 here. 
+
+Now that you know what a classification tree is, let's fit one with scikit-learn. First, import DecisionTreeClassifier from sklearn, also, import the fuction train_test_split() from sklearn.
+model_selection and accuracy_score() from sklearn.
+
+Metrics, in order to obtain an unbiased estimate of a model's performance, you must evaluate it on an unseen test set. To do so, first split the data into 80% train and 20 % test using train_test_split(). Set the parameter stratify to y in order for the train and test sets to have the same proportion of class labels as the unsplit dataset.
+
+
+
+You can now use DecisionTreeClassifier() to instantiate a tree classifier, dt with a maximum depth of 2 by setting the parameter max_depth to 2.
+
+Note that the parameter random state is set to 1 for reproducibility.
+
+Then call the fit method on dt and pass X_train and y_train to predict the labels of the test-set, call the predict method on dt.
+
+Finnally print the accuracy of the test set using accuracy_score(), to understand the tree's predictions more concretely, let's see how it classifies instances in the feature-space. 
+
+A classification-model divides the feature-space into regions where all instances in one region are assigned to only one class-label. These regions are known as decision-regions.
+
+Decision-regions are separated by surfaces called decision-boundaries.
+
+<Figure>
+
+The figure here shows the decision-regions of a linear-classifier.
+
+<code - Train your first classification tree>
+
+
+Classification tree Learning <Video>
+
+A decision tree is a data-structure consisting of a hierarchy of individual units called nodes. A node is a point that involves either a question or a prediction.
+
+The root is a the node at which the decion-tree starts growing It has no parent node and involves a question that gives rise to 2 children nodes through two branches.
+
+
+An internal node is a node that has a parent. It also involves a question that gives rise to 2 children nodes. Finally, a node that has no children is called a leaf.
+
+A lead has one parent node and involves no questions. It''s where a prediction is made. Recall that when a classification tree is trained on a labeled dataset, the three learns patterns from the features in such a way to produce the purest leafs.
+
+In ohter words the tree is trained in such a way so that, in each leaf, one class-label is predominant.
+
+<IMG>
+
+In this leaf, there are 257 instances classified as benign and 7 instances classified as malignant. As a result, the tree's prediction for this instance would be : 'benign'.
+
+in order to understand how a classification tree produces the purest leafs possible, let's first define define the concept or information gain. 
+
+<IMG>
+
+The nodes of a classification tree are grown recursively; in the words, the obtention of an internal node or a leaf depends on the state of its predecessors to produce the purest leafs possible, at each node, a tree asks a question involving one feature f and a split-point sp. But how does it know which feature and which split-point to pick?
+
+It does so by maximizing information gain. The tree cosiders that every node contains information and aims at maimizing the information Gain obtained after each split. 
+
+Consider the case where a node with N samples is plit into a left-node with Nleft samples and right-node with Nright samples. The information gain for such split is given by the formula shown here.
+
+<Formula - Information Gain>
+
+A question that you may have in mind here is : 'What criterion is used to measuse the impurity of a node?'
+
+Well, there are different criterua you can use among which are the gini-index and entropy. Now that you know what is information gain, let's describe how a classification tree learns. When an unconstrained tree is trained, the nodes are grown recursively.
+
+In other words, a node exists based on the stae of its predecessors. At a non-leaf node, the data is plit based on feature f and split-point sp in such a way to maximize information gain.
+
+The information gain obtained by splitting a node is null, the node declared a leaf. Keep in mind that these rules are for unconstrained trees.
+
+If you constrain the maximun depth of a tree to 2 for example, all nodes having a deapth of 2 will be declared leafs even if the inforamtion gain obtained by splitting such nodes is not null.
+
+Revisiting the 2D breast-cance dataset from the previus lesson, you can set the information criterion of dt to the gini-index setting the criterion parameter to 'gini' as shown on the last line here. Now fit dt to the training set and predict the test set labels. Then determine dt's test set accuracy which evaluates to about 92 %.
+
+
+<Decision Tree for Regression - Video >
+
+We'll learn how to train a decion tree for a regression problem.
+Recall that in regression, the target variable is continous, in other words, the output of your model is a real value.
+
+automobile miles-per-gallon data set from the UCI Machine Learning repository.
+
+<img dataset>
+
+this dataset consists of 6 features corresponding to the characteristis of a car and a continous target variable labeled mpg which stands for miles-per-gallon. Our task is to predict the mpg consuption of a car given these six features.
+
+
+To simplify the problem, here the analysis is restricted to only one feature corresponding to the displacemente of a car. This feature is denoted by displ.
+
+<img scatter>
+
+
+A 2D scatter plot of mpg versus displ shows that the mpg-consuption decreases nonlinearly with displacement
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
